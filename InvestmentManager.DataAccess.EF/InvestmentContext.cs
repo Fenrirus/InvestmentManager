@@ -6,23 +6,17 @@ namespace InvestmentManager.DataAccess.EF
 {
     public class InvestmentContext : DbContext
     {
-
-
-        public InvestmentContext(DbContextOptions options) : base(options)
+        public InvestmentContext(DbContextOptions<InvestmentContext> options) : base(options)
         {
-
         }
 
-
         public DbSet<TradeDate> TradeDates { get; set; }
-
 
         public DbSet<InvestmentAccountType> AccountTypes { get; set; }
 
         public DbSet<InvestmentAccount> Accounts { get; set; }
 
         public DbSet<AccountMarketValue> AccountMarketValues { get; set; }
-
 
         public DbSet<SecurityType> SecurityTypes { get; set; }
 
@@ -33,7 +27,6 @@ namespace InvestmentManager.DataAccess.EF
         public DbSet<AccountPosition> AccountPositions { get; set; }
 
         public DbSet<CashFlow> AccountCashFlows { get; set; }
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -53,7 +46,6 @@ namespace InvestmentManager.DataAccess.EF
             this.ConfigureSecurityPrices(modelBuilder);
         }
 
-
         private void ConfigureTradeDate(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<TradeDate>()
@@ -70,7 +62,6 @@ namespace InvestmentManager.DataAccess.EF
                 .HasColumnName("YearEndDate");
         }
 
-
         private void ConfigureInvestmentAccountType(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<InvestmentAccountType>()
@@ -84,7 +75,6 @@ namespace InvestmentManager.DataAccess.EF
             modelBuilder.Entity<InvestmentAccountType>().Property(p => p.Prefix)
                 .HasColumnName("AccountPrefix");
         }
-
 
         private void ConfigureInvestmentAccount(ModelBuilder modelBuilder)
         {
@@ -100,7 +90,7 @@ namespace InvestmentManager.DataAccess.EF
         {
             modelBuilder.Entity<AccountMarketValue>()
                 .ToTable("AccountMarketValues")
-                .HasKey(mv => new { mv.Date, mv.AccountNumber } );
+                .HasKey(mv => new { mv.Date, mv.AccountNumber });
 
             modelBuilder.Entity<AccountMarketValue>().Property(p => p.Date)
                 .HasColumnName("TradeDate");
@@ -108,9 +98,6 @@ namespace InvestmentManager.DataAccess.EF
             modelBuilder.Entity<AccountMarketValue>()
                 .HasOne<TradeDate>(d => d.TradeDate);
         }
-
-
-
 
         private void ConfigureSecurityType(ModelBuilder modelBuilder)
         {
@@ -124,8 +111,6 @@ namespace InvestmentManager.DataAccess.EF
                 .HasColumnName("SecurityTypeName");
         }
 
-
-
         private void ConfigureSecurity(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Security>()
@@ -138,11 +123,10 @@ namespace InvestmentManager.DataAccess.EF
                 .HasColumnName("SecurityName");
         }
 
-
         private void ConfigureAccountPosition(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<AccountPosition>()
-                .ToTable("AccountPositions")                
+                .ToTable("AccountPositions")
                 .HasKey(p => new { p.Date, p.AccountNumber, p.Symbol });
 
             modelBuilder.Entity<AccountPosition>().Property(p => p.Date)
@@ -161,7 +145,6 @@ namespace InvestmentManager.DataAccess.EF
                 .HasOne<Security>(p => p.Security);
         }
 
-
         private void ConfigureCashFlowTypeCode(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CashFlowType>()
@@ -176,7 +159,6 @@ namespace InvestmentManager.DataAccess.EF
                 .HasColumnName("ExternalFlow");
         }
 
-
         private void ConfigureCashFlow(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<CashFlow>()
@@ -190,15 +172,14 @@ namespace InvestmentManager.DataAccess.EF
                 .HasColumnName("TradeDate");
 
             modelBuilder.Entity<CashFlow>()
-                .HasOne<CashFlowType>(x => x.CashFlowType);                
+                .HasOne<CashFlowType>(x => x.CashFlowType);
         }
-
 
         private void ConfigureSecurityPrices(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SecurityPrice>()
                 .ToTable("SecurityPrices")
-                .HasKey(sp => new { sp.Date, sp.Symbol } );
+                .HasKey(sp => new { sp.Date, sp.Symbol });
 
             modelBuilder.Entity<SecurityPrice>().Property(p => p.Date)
                 .HasColumnName("TradeDate");
@@ -210,6 +191,5 @@ namespace InvestmentManager.DataAccess.EF
             modelBuilder.Entity<SecurityPrice>()
                 .HasOne<Security>(x => x.Security);
         }
-
     }
 }

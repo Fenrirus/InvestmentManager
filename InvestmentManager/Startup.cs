@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using InvestmentManager.HealthChecks;
+using HealthChecks.UI.Client;
 
 namespace InvestmentManager
 {
@@ -71,7 +72,9 @@ namespace InvestmentManager
             services.AddHealthChecks()
             .AddSqlServer(connectionString, failureStatus: HealthStatus.Unhealthy, tags: new[] { "Ready" })
             .AddUrlGroup(new Uri($"{stockIndexServiceUrl}/api/StockIndexes"), "Stock Indexes Health Check", HealthStatus.Degraded, tags: new[] { "Ready" }, timeout: new TimeSpan(0, 0, 5))
-            .AddCheck("File Path Writer", new FilePathWriterHealthCheck(securityFile), HealthStatus.Unhealthy, tags: new[] { "Ready" });
+            .AddFilePathWriter(securityFile, HealthStatus.Unhealthy, tags: new[] { "Ready" });
+
+            services.AddHealthChecksUI();
         }
 
         // Configures the HTTP request pipeline.
@@ -110,7 +113,14 @@ namespace InvestmentManager
                     Predicate = (check) => !check.Tags.Contains("Ready"),
                     AllowCachingResponses = false
                 });
+                endpoints.MapHealthChecks("/healthUi", new HealthCheckOptions()
+                {
+                    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse,
+                    Predicate = _ => true
+                });
+                //w przeglądarce pod http://localhost:51500/healthchecks-ui#/healthchecks
             });
+            app.UseHealthChecksUI();
         }
 
         private Task WriteGealthCheckLiveReposne(HttpContext context, HealthReport report)
