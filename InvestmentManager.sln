@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28917.182
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InvestmentManager", "InvestmentManager\InvestmentManager.csproj", "{6D3049C4-9F2A-41FC-BC52-0205E061FC2F}"
 EndProject
@@ -14,6 +14,8 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InvestmentManager", "InvestmentManager", "{43D02B5C-5E8F-4A3B-A655-D7A989F52858}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "StockIndex API", "StockIndex API", "{22D0FC6F-BCCC-44F0-B92E-F748253470DE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HealthCheckAlerter", "HealthCheckAlerter\HealthCheckAlerter.csproj", "{0CFC217A-4962-4DC8-9579-DCD8A218952B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,6 +39,10 @@ Global
 		{D75CB12D-76BB-474C-B815-2245A7E11DB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D75CB12D-76BB-474C-B815-2245A7E11DB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D75CB12D-76BB-474C-B815-2245A7E11DB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CFC217A-4962-4DC8-9579-DCD8A218952B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CFC217A-4962-4DC8-9579-DCD8A218952B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CFC217A-4962-4DC8-9579-DCD8A218952B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CFC217A-4962-4DC8-9579-DCD8A218952B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

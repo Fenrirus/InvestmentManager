@@ -18,6 +18,8 @@ using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using InvestmentManager.HealthChecks;
 using HealthChecks.UI.Client;
+using InvestmentManager.HealtCheckPublisher;
+using InvestmentManager.QueueMessages;
 
 namespace InvestmentManager
 {
@@ -48,6 +50,8 @@ namespace InvestmentManager
 
             services.AddMvc(options => options.EnableEndpointRouting = false).SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
             services.AddSingleton<IConfiguration>(this.Configuration);
+            services.AddSingleton<IHealthCheckPublisher, HealthCheckQueuePublisher>();
+            services.AddTransient<IQueueMessage, RabbitMQQueueMessage>();
 
             // Configure the data access layer
             var connectionString = this.Configuration.GetConnectionString("InvestmentDatabase");
@@ -73,6 +77,14 @@ namespace InvestmentManager
             .AddSqlServer(connectionString, failureStatus: HealthStatus.Unhealthy, tags: new[] { "Ready" })
             .AddUrlGroup(new Uri($"{stockIndexServiceUrl}/api/StockIndexes"), "Stock Indexes Health Check", HealthStatus.Degraded, tags: new[] { "Ready" }, timeout: new TimeSpan(0, 0, 5))
             .AddFilePathWriter(securityFile, HealthStatus.Unhealthy, tags: new[] { "Ready" });
+
+            services.Configure<HealthCheckPublisherOptions>(options =>
+            {
+                options.Delay = TimeSpan.FromSeconds(5);
+                options.Period = TimeSpan.FromSeconds(10);
+                options.Predicate = (check) => check.Tags.Contains("Ready");
+                options.Timeout = TimeSpan.FromSeconds(20);
+            });
 
             services.AddHealthChecksUI();
         }
