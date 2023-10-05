@@ -16,6 +16,7 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using InvestmentManager.HealthChecks;
 
 namespace InvestmentManager
 {
@@ -65,9 +66,12 @@ namespace InvestmentManager
                 loggingBuilder.AddNLog();
             });
 
+            var securityFile = Configuration["SecurityFilePath"];
+
             services.AddHealthChecks()
             .AddSqlServer(connectionString, failureStatus: HealthStatus.Unhealthy, tags: new[] { "Ready" })
-            .AddUrlGroup(new Uri($"{stockIndexServiceUrl}/api/StockIndexes"), "Stock Indexes Health Check", HealthStatus.Degraded, tags: new[] { "Ready" }, timeout: new TimeSpan(0, 0, 5));
+            .AddUrlGroup(new Uri($"{stockIndexServiceUrl}/api/StockIndexes"), "Stock Indexes Health Check", HealthStatus.Degraded, tags: new[] { "Ready" }, timeout: new TimeSpan(0, 0, 5))
+            .AddCheck("File Path Writer", new FilePathWriterHealthCheck(securityFile), HealthStatus.Unhealthy, tags: new[] { "Ready" });
         }
 
         // Configures the HTTP request pipeline.
@@ -131,7 +135,9 @@ namespace InvestmentManager
                 new JProperty("DependecyHealthChecks", new JObject(report.Entries.Select(dict =>
                     new JProperty(dict.Key, new JObject(
                         new JProperty("OverallStatus", dict.Value.Status.ToString()),
-                        new JProperty("TotalCheckDuration", dict.Value.Duration.TotalSeconds.ToString("0:0.00"))
+                        new JProperty("TotalCheckDuration", dict.Value.Duration.TotalSeconds.ToString("0:0.00")),
+                        new JProperty("Exception", dict.Value.Exception?.Message),
+                        new JProperty("Data", new JObject(dict.Value.Data.Select(dictdata => new JProperty(dictdata.Key, dictdata.Value))))
                         ))
                     )))
                 );
